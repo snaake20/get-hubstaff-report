@@ -1,0 +1,28 @@
+{
+  "name": "get_hubstaff_report",
+  "description": "This scripts writes a report using Hubstaff activity.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "chromedriver": "^104.0.0",
+    "dotenv": "^16.0.1",
+    "geckodriver": "^3.0.2",
+    "selenium-webdriver": "^4.4.0"
+  },
+  "scripts": {
+    "script": "node \"index.js\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snaake20/get-hubstaff-report"
+  },
+  "keywords": [
+    "Report"
+  ],
+  "author": "snaake20",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/snaake20/get-hubstaff-report/issues"
+  },
+  "homepage": "https://github.com/snaake20/get-hubstaff-report#readme"
+}
