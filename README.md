@@ -1,4 +1,4 @@
-# get_hubStaff_report
+# get_hubstaff_report
 This scripts writes a report using Hubstaff activity.
 
 Languages: JS
