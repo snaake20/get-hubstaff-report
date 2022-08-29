@@ -29,7 +29,9 @@ async function getDailyReport(date) {
   const link = await driver.getCurrentUrl()
   const id = link.match(/\d+/)[0]
 
-  await driver.get(`https://app.hubstaff.com/reports/${id}/my/time_and_activities?date=${date}&date_end=${date}&group_by=date&filters[show_tasks]=true&filters[show_notes]=true&filters[show_activity]=true&filters[show_break_time]=true&filters[show_spent]=true&filters[show_billable]=&filters[include_archived]=true&filters[exclude_work_breaks]=true&filters[show_manual]=true`).then(() => console.log('Got to report page'))
+  await driver.get(`https://app.hubstaff.com/reports/${id}/my/time_and_activities?date=${date}&date_end=${date}`)
+  
+  await driver.sleep(2000)
 
   let totalHours = await driver.wait(until.elementLocated(By.css(`tbody.ttotal:nth-child(3) > tr:nth-child(1) > td:nth-child(3)`)), 10000).getText()
 
