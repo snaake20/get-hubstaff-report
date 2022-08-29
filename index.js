@@ -30,8 +30,6 @@ async function getDailyReport(date) {
   const id = link.match(/\d+/)[0]
 
   await driver.get(`https://app.hubstaff.com/reports/${id}/my/time_and_activities?date=${date}&date_end=${date}`)
-  
-  await driver.sleep(2000)
 
   let totalHours = await driver.wait(until.elementLocated(By.css(`tbody.ttotal:nth-child(3) > tr:nth-child(1) > td:nth-child(3)`)), 10000).getText()
 
