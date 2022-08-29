@@ -63,7 +63,7 @@ async function getDailyReport(date) {
     input: process.stdin, output: process.stdout
   });
   await new Promise(res => {
-    rl.question('Enter the date for the report (formats: dd.mm.yyyy, dd/mm/yyyy) ', res)
+    rl.question('Enter the date for the report (formats: dd.mm.yyyy) ', res)
   }).then((res) => {
     getDailyReport(res).then(() => process.exit())
   })
