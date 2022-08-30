@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const {By, Key, Builder, until} = require("selenium-webdriver");
 require("chromedriver");
+const chrome    = require('selenium-webdriver/chrome')
 const readline = require('readline');
 require('dotenv').config()
 
