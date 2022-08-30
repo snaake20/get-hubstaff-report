@@ -2,9 +2,21 @@ const fs = require('fs');
 const path = require('path');
 const {By, Key, Builder, until} = require("selenium-webdriver");
 require("chromedriver");
-const chrome    = require('selenium-webdriver/chrome')
+const chrome = require('selenium-webdriver/chrome')
 const readline = require('readline');
 require('dotenv').config()
+
+function convertTo24HourTime(time) {
+  let meridian = time[1]
+  if (meridian === 'pm') {
+    time[0] = time[0].replace(/\d+:\d+/, (hoursMinutes) => {
+      let [hours, minutes] = hoursMinutes.split(':')
+      hours = parseInt(hours) + 12
+      return `${hours}:${minutes}`
+    })
+  }
+  return time[0]
+}
 
 async function getDailyReport(date) {
   if (!fs.existsSync('./reports')) {
@@ -19,8 +31,7 @@ async function getDailyReport(date) {
   logStream.write('Raportul pentru azi:\n');
 
 
-  let driver = await new Builder().forBrowser("chrome").build();
-  driver = driver.setChromeOptions(new chrome.Options().headless())
+  const driver = await new Builder().forBrowser("chrome").setChromeOptions(new chrome.Options().headless()).build();
 
   await driver.get("https://app.hubstaff.com/login");
 
@@ -51,8 +62,30 @@ async function getDailyReport(date) {
     let time = await driver.findElement(By.css(`.tbody > tr:nth-child(${index}) > td:nth-child(3)`)).getText()
     logStream.write(`\t\t${project || '\t\t'}${task || ''} ${time.slice(0,4)}\n`);
   }
-  logStream.write(`\nIn:  Out:  Work Time: ${totalHours.length === 8 ? totalHours.slice(0,5) : totalHours.slice(0,4)}\n`);
-  logStream.end("\nCreated with https://github.com/snaake20/get_hubstaff_report \n");
+
+  await driver.get(`https://app.hubstaff.com/organizations/${id}/time_entries/daily?date=${date}&date_end=${date}`)
+
+  let inTime = await driver.wait(until.elementLocated(By.css(`tr.vue-time-entries-row:nth-child(1) > td:nth-child(8)`)), 10000).getText()
+  inTime = inTime.match(/\d+:\d+ am|\d+:\d+ pm/gm)[0].split(' ')
+  inTime[0] = convertTo24HourTime(inTime)
+
+  let index = 2;
+  let outTime;
+  while(true) {
+    try {
+      await driver.findElement(By.css(`tr.vue-time-entries-row:nth-child(${index}) > td:nth-child(8)`)).getText()
+      index++;
+    } catch (e) {
+      outTime = await driver.findElement(By.css(`tr.vue-time-entries-row:nth-child(${index-1}) > td:nth-child(8)`)).getText()
+      outTime = outTime.match(/\d+:\d+ am|\d+:\d+ pm/gm)[1].split(' ')
+      outTime[0] = convertTo24HourTime(outTime)
+      break;
+    }
+  }
+
+  logStream.write(`\nIn: ${inTime[0]} Out: ${outTime[0]} Work Time: ${totalHours.length === 8 ? totalHours.slice(0,5) : totalHours.slice(0,4)}\n`);
+  logStream.end("\n\nCreated with https://github.com/snaake20/get_hubstaff_report");
+
 
   await driver.quit();
 }
