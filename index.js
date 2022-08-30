@@ -27,7 +27,7 @@ async function getDailyReport(date) {
   await driver.findElement(By.xpath('//*[@id="user_password"]')).sendKeys(`${process.env.password}`, Key.ENTER).then(() => console.log('logged in'));
 
   const link = await driver.getCurrentUrl()
-  const id = link.match(/\d+/)[0]
+  const id = link.match(/\d+/)
 
   await driver.get(`https://app.hubstaff.com/reports/${id}/my/time_and_activities?date=${date}&date_end=${date}`)
 
