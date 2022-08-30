@@ -19,7 +19,7 @@ async function getDailyReport(date) {
 
 
   let driver = await new Builder().forBrowser("chrome").build();
-  builder = builder.setChromeOptions(new chrome.Options().headless())
+  driver = driver.setChromeOptions(new chrome.Options().headless())
 
   await driver.get("https://app.hubstaff.com/login");
 
