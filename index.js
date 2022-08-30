@@ -49,7 +49,7 @@ async function getDailyReport(date) {
     let time = await driver.findElement(By.css(`.tbody > tr:nth-child(${index}) > td:nth-child(3)`)).getText()
     logStream.write(`\t\t${project || '\t\t'}${task || ''} ${time.slice(0,4)}\n`);
   }
-  logStream.write(`\nIn: Out:  Work Time: ${totalHours}\n`);
+  logStream.write(`\nIn:  Out:  Work Time: ${totalHours.length === 8 ? totalHours.slice(0,5) : totalHours.slice(0,4)}\n`);
   logStream.end("\nCreated with https://github.com/snaake20/get_hubStaff_report \n");
 
   await driver.quit().then(() => console.log('done!'));
