@@ -18,13 +18,14 @@ async function getDailyReport(date) {
   logStream.write('Raportul pentru azi:\n');
 
 
-  const driver = await new Builder().forBrowser("chrome").build();
+  let driver = await new Builder().forBrowser("chrome").build();
+  builder = builder.setChromeOptions(new chrome.Options().headless())
 
   await driver.get("https://app.hubstaff.com/login");
 
   await driver.findElement(By.xpath('//*[@id="user_email"]')).sendKeys(`${process.env.email}`);
 
-  await driver.findElement(By.xpath('//*[@id="user_password"]')).sendKeys(`${process.env.password}`, Key.ENTER).then(() => console.log('logged in'));
+  await driver.findElement(By.xpath('//*[@id="user_password"]')).sendKeys(`${process.env.password}`, Key.ENTER);
 
   const link = await driver.getCurrentUrl()
   const id = link.match(/\d+/)
@@ -50,9 +51,9 @@ async function getDailyReport(date) {
     logStream.write(`\t\t${project || '\t\t'}${task || ''} ${time.slice(0,4)}\n`);
   }
   logStream.write(`\nIn:  Out:  Work Time: ${totalHours.length === 8 ? totalHours.slice(0,5) : totalHours.slice(0,4)}\n`);
-  logStream.end("\nCreated with https://github.com/snaake20/get_hubStaff_report \n");
+  logStream.end("\nCreated with https://github.com/snaake20/get_hubstaff_report \n");
 
-  await driver.quit().then(() => console.log('done!'));
+  await driver.quit();
 }
 
 (async () => {
