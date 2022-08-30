@@ -49,17 +49,17 @@ async function getDailyReport(date) {
   let project
   let task
 
-  for (let index = 1; ; index++) {
+  for (let idx = 1; ; idx++) {
     try {
-      project = await driver.findElement(By.css(`.tbody > tr:nth-child(${index}) > td:nth-child(1)`)).getText().then(r => r.slice(2).trim())
+      project = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(1)`)).getText().then(r => r.slice(2).trim())
       task = ''
     } catch (e) {
       break;
     }
     if (project === '') {
-      task = await driver.findElement(By.css(`.tbody > tr:nth-child(${index}) > td:nth-child(2)`)).getText()
+      task = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(2)`)).getText()
     }
-    let time = await driver.findElement(By.css(`.tbody > tr:nth-child(${index}) > td:nth-child(3)`)).getText()
+    let time = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(3)`)).getText()
     logStream.write(`\t\t${project || '\t\t'}${task || ''} ${time.slice(0,4)}\n`);
   }
 
