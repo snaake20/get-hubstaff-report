@@ -60,7 +60,7 @@ async function getDailyReport(date) {
       task = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(2)`)).getText()
     }
     let time = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(3)`)).getText()
-    logStream.write(`${project || '\t\t'}${task || ''} ${time.slice(0,4)}\n`);
+    logStream.write(`${project || ''}${task || ''} ${time.slice(0,4)}\n`);
   }
 
   await driver.get(`https://app.hubstaff.com/organizations/${id}/time_entries/daily?date=${date}&date_end=${date}`)
