@@ -31,7 +31,7 @@ async function getDailyReport(date) {
   logStream.write('Raportul pentru azi:\n');
 
 
-  const driver = await new Builder().forBrowser("chrome").setChromeOptions(new chrome.Options().headless()).build();
+  const driver = await new Builder().forBrowser("chrome").setChromeOptions(new chrome.Options()).build();
 
   await driver.get("https://app.hubstaff.com/login");
 
@@ -49,18 +49,36 @@ async function getDailyReport(date) {
   let project
   let task
 
-  for (let idx = 1; ; idx++) {
+  const lines = await driver.executeScript(' return document.querySelectorAll(\'.report-table-virtual-list > div > div\')');
+
+  // outerLoop: for (let i=0;i<lines.length;i++) {
+  //   let line = await lines[i];
+  //   try {
+  //     project =  await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(1)')`).getText().then(r => r.slice(2).trim());
+  //     console.log(project)
+  //     let time = await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(3)')`).getText();
+  //     logStream.write(`${project || ''}${task || ''} ${time.slice(0,4)}\n`);
+  //   } catch (e) {
+  //     try {
+  //       task =  await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(2)')`).getText().then(r => r.slice(2).trim());
+  //       let time = await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(3)')`).getText();
+  //       logStream.write(`${project || ''}${task || ''} ${time.slice(0,4)}\n`);
+  //     } catch(e) {
+  //       continue outerLoop;
+  //     }
+  //   }
+  // };
+  logStream.write('\n');
+  for (let idx = 1; idx<= lines.length ; idx++) {
     try {
-      project = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(1)`)).getText().then(r => r.slice(2).trim())
-      task = ''
+      project = await driver.findElement(By.css(`.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(1)`)).getText().then(r => r.slice(2).trim())
+      if (!project) task = await driver.findElement(By.css(`.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(2)`)).getText()
+      let time = await driver.findElement(By.css(`.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(3)`)).getText()
+      console.log(project, time);
+      logStream.write(`${project || '\t'}${task || ''} ${time.slice(0,4)}\n`);
     } catch (e) {
-      break;
+        continue;      
     }
-    if (project === '') {
-      task = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(2)`)).getText()
-    }
-    let time = await driver.findElement(By.css(`.tbody > tr:nth-child(${idx}) > td:nth-child(3)`)).getText()
-    logStream.write(`${project || ''}${task || ''} ${time.slice(0,4)}\n`);
   }
 
   await driver.get(`https://app.hubstaff.com/organizations/${id}/time_entries/daily?date=${date}&date_end=${date}`)
@@ -90,13 +108,7 @@ async function getDailyReport(date) {
   await driver.quit();
 }
 
-(async () => {
-  const rl = readline.createInterface({
-    input: process.stdin, output: process.stdout
-  });
-  await new Promise(res => {
-    rl.question('Enter the date for the report (formats: yyyy-mm-dd) ', res)
-  }).then((res) => {
-    getDailyReport(res).then(() => process.exit())
-  })
+(() => {
+  const date = new Date().toISOString().slice(0, 10);
+  getDailyReport(date).then(() => process.exit())
 })();

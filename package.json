@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
-    "chromedriver": "^104.0.0",
+    "chromedriver": "^116.0.0",
     "dotenv": "^16.0.1",
     "geckodriver": "^3.0.2",
     "selenium-webdriver": "^4.4.0"
