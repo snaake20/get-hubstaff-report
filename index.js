@@ -51,27 +51,11 @@ async function getDailyReport(date) {
 
   const lines = await driver.executeScript(' return document.querySelectorAll(\'.report-table-virtual-list > div > div\')');
 
-  // outerLoop: for (let i=0;i<lines.length;i++) {
-  //   let line = await lines[i];
-  //   try {
-  //     project =  await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(1)')`).getText().then(r => r.slice(2).trim());
-  //     console.log(project)
-  //     let time = await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(3)')`).getText();
-  //     logStream.write(`${project || ''}${task || ''} ${time.slice(0,4)}\n`);
-  //   } catch (e) {
-  //     try {
-  //       task =  await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(2)')`).getText().then(r => r.slice(2).trim());
-  //       let time = await line.executeScript(` return document.querySelector('.report-table-virtual-list > div > div:nth-of-type(${id}) > div > table > .tbody > tr > td:nth-child(3)')`).getText();
-  //       logStream.write(`${project || ''}${task || ''} ${time.slice(0,4)}\n`);
-  //     } catch(e) {
-  //       continue outerLoop;
-  //     }
-  //   }
-  // };
   logStream.write('\n');
   for (let idx = 1; idx<= lines.length ; idx++) {
     try {
       project = await driver.findElement(By.css(`.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(1)`)).getText().then(r => r.slice(2).trim())
+      task= ''
       if (!project) task = await driver.findElement(By.css(`.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(2)`)).getText()
       let time = await driver.findElement(By.css(`.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(3)`)).getText()
       console.log(project, time);
