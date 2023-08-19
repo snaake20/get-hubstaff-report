@@ -17,7 +17,7 @@ Setup:
 
 ---
 
-To run this use: `yarn run script` or `npm run script`
+To run this use: `yarn get-report` or `npm run get-report`
 
 ---
 
