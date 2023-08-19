@@ -11,8 +11,10 @@ import {
   getDate,
   getDriver,
 } from './utils/utils';
+import { config } from 'dotenv';
+config();
 
-async function getDailyReport(date: string) {
+async function getDailyReport(date: string): Promise<void> {
   const driver = await getDriver();
 
   await login(driver);
@@ -39,5 +41,5 @@ async function getDailyReport(date: string) {
 (async () => {
   createDirectory();
 
-  getDailyReport(await getDate()).then(() => process.exit());
+  void getDailyReport(await getDate()).then(() => process.exit());
 })();

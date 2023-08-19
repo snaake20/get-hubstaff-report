@@ -1,13 +1,12 @@
 import { createWriteStream, existsSync, mkdir, WriteStream } from 'fs';
-import path from 'path';
 import { createInterface } from 'readline';
-import { Builder } from 'selenium-webdriver';
+import { Builder, WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import 'chromedriver';
 
 export function createDirectory(): void {
   if (!existsSync('./reports')) {
-    mkdir(path.join(__dirname, 'reports'), (err) => {
+    mkdir('./reports', (err) => {
       if (err) {
         return console.error(err);
       }
@@ -15,7 +14,7 @@ export function createDirectory(): void {
   }
 }
 
-function question(prompt:string) {
+function question(prompt:string): Promise<string> {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -38,11 +37,11 @@ function question(prompt:string) {
   });
 }
 
-export async function getDate() {
+export async function getDate(): Promise<string> {
   return await question("Enter the date for the report (formats: yyyy-mm-dd) or nothing for today: ") || new Date().toISOString().slice(0, 10);
 }
 
-export async function getDriver() {
+export async function getDriver(): Promise<WebDriver> {
   return await new Builder()
     .forBrowser('chrome')
     .setChromeOptions(new chrome.Options().headless())
@@ -50,7 +49,7 @@ export async function getDriver() {
 }
 
 export function createReportTxt(date: string): WriteStream {
-  return createWriteStream(`reports/Raport ${process.env.name} ${date}.txt`, {
+  return createWriteStream(`./reports/Raport ${process.env.name} ${date}.txt`, {
     flags: 'w',
   });
 }

@@ -1,9 +1,8 @@
 import { WriteStream } from 'fs';
 import { By, Key, WebDriver, until } from 'selenium-webdriver';
 import { convertTo24HourTime } from '../utils/utils';
-require('dotenv').config();
 
-export async function login(driver: WebDriver) {
+export async function login(driver: WebDriver): Promise<void> {
   await driver.get('https://app.hubstaff.com/login');
 
   await driver
@@ -25,7 +24,7 @@ async function countLines(driver: WebDriver): Promise<number> {
 export async function writeReportBody(
   driver: WebDriver,
   logStream: WriteStream
-) {
+): Promise<void> {
   const noLines = await countLines(driver);
 
   for (let idx = 1; idx <= noLines; idx++) {
@@ -67,7 +66,7 @@ export async function writeReportBody(
   }
 }
 
-export function writeReportHeader(logStream: WriteStream) {
+export function writeReportHeader(logStream: WriteStream): void {
   logStream.write('Raportul pentru azi:\n\n');
 }
 
@@ -75,7 +74,7 @@ export async function getTotalHours(
   driver: WebDriver,
   id: string,
   date: string
-) {
+): Promise<string | null> {
   await driver.get(
     `https://app.hubstaff.com/reports/${id}/my/time_and_activities?date=${date}&date_end=${date}`
   );
@@ -107,7 +106,7 @@ export async function writeReportFooter(
   id: string,
   date: string,
   totalHours: string
-) {
+): Promise<void> {
   await driver.get(
     `https://app.hubstaff.com/organizations/${id}/time_entries/daily?date=${date}&date_end=${date}`
   );
