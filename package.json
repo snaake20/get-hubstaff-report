@@ -4,13 +4,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
-    "chromedriver": "^116.0.0",
-    "dotenv": "^16.0.1",
-    "geckodriver": "^3.0.2",
-    "selenium-webdriver": "^4.4.0"
+    "@tsconfig/node18": "^18.2.0",
+    "@types/chromedriver": "^81.0.1",
+    "@types/selenium-webdriver": "^4.1.15",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   },
   "scripts": {
-    "script": "node \"index.js\" && exit 0"
+    "get-report": "ts-node \"src/index.ts\" && exit 0"
   },
   "repository": {
     "type": "git",
@@ -20,9 +21,14 @@
     "Report"
   ],
   "author": "snaake20",
-  "license": "GPL-3.0",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/snaake20/get-hubstaff-report/issues"
   },
-  "homepage": "https://github.com/snaake20/get-hubstaff-report#readme"
+  "homepage": "https://github.com/snaake20/get-hubstaff-report#readme",
+  "dependencies": {
+    "chromedriver": "^116.0.0",
+    "dotenv": "^16.3.1",
+    "selenium-webdriver": "^4.11.1"
+  }
 }
