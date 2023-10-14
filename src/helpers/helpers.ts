@@ -1,4 +1,5 @@
-import { WriteStream } from 'fs';
+import { WriteStream, } from 'fs';
+import { readdir } from 'fs/promises';
 import { By, Key, WebDriver, until } from 'selenium-webdriver';
 import { convertTo24HourTime } from '../utils/utils';
 
@@ -25,45 +26,27 @@ export async function writeReportBody(
   driver: WebDriver,
   logStream: WriteStream
 ): Promise<void> {
-  const noLines = await countLines(driver);
+  const exportBtn = await driver.findElement(By.css('.dropdown.open'));
+  const dropdown = await exportBtn.findElement(By.css('.dropdown-menu'));
+  const buttonToClick = await dropdown.findElement(By.css('li:nth-of-type(2)'));
+  await buttonToClick.click();
 
-  for (let idx = 1; idx <= noLines; idx++) {
-    try {
-      let project = await driver
-        .findElement(
-          By.css(
-            `.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(1)`
-          )
-        )
-        .getText()
-        .then((r) => r.slice(2).trim());
-      let task = '';
-      if (!project)
-        task = await driver
-          .findElement(
-            By.css(
-              `.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(2)`
-            )
-          )
-          .getText();
-      let time = await driver
-        .findElement(
-          By.css(
-            `.report-table-virtual-list > div > div:nth-of-type(${idx}) > div > table > .tbody > tr > td:nth-child(3)`
-          )
-        )
-        .getText();
-      if (time.slice(0,4) !== '0:00')
-        logStream.write(
-          `${project ? '\t' + project : '\t\t'}${task || ''} ${time.slice(
-            0,
-            4
-          )}\n`
-        );
-    } catch (e) {
-      continue;
-    }
-  }
+  await driver.sleep(500);
+
+  await driver.findElement(By.css('.custom-checkbox-wrapper.my-5.mx-0:nth-of-type(2)')).click();
+  await driver.sleep(500);
+  await driver.findElement(By.css('.justify-content-end > .btn.btn-primary')).click();
+
+  // now the file is downloading
+
+  await driver.sleep(1000);
+
+  // how do I get the file
+
+  readdir('~/Downloads').then((files) => {
+    console.log(files);
+  });
+  
 }
 
 export function writeReportHeader(logStream: WriteStream): void {

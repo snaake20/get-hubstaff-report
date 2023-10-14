@@ -56,7 +56,7 @@ export function createReportTxt(date: string): WriteStream {
 
 export function convertTo24HourTime(date: string[]): string {
   let meridian = date[1];
-  if (meridian === 'pm') {
+  if (meridian === 'pm' && !date[0].startsWith('12')) {
     date[0] = date[0].replace(/\d+:\d+/, (hoursMinutes) => {
       let [hours, minutes] = hoursMinutes.split(':');
       return `${parseInt(hours) + 12}:${minutes}`;
